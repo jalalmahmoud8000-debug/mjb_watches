@@ -1,0 +1,292 @@
+{% extends 'base.html' %}
+
+{% block title %}تم الطلب - شكراً{% endblock %}
+
+{% block content %}
+<style>
+    .thank-you-container {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 0;
+        background: linear-gradient(135deg, rgba(15, 15, 15, 0.7) 0%, rgba(25, 25, 25, 0.9) 100%);
+    }
+
+    .thank-you-card {
+        background: rgba(25, 25, 25, 0.95);
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        border-radius: 25px;
+        padding: 3rem;
+        text-align: center;
+        max-width: 600px;
+        width: 100%;
+        backdrop-filter: blur(15px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .thank-you-card::before {
+        content: '';
+        position: absolute;
+        top: -50px;
+        right: -50px;
+        width: 150px;
+        height: 150px;
+        background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+        z-index: 0;
+    }
+
+    .thank-you-card::after {
+        content: '';
+        position: absolute;
+        bottom: -80px;
+        left: -80px;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, transparent 70%);
+        border-radius: 50%;
+        z-index: 0;
+    }
+
+    .thank-you-icon {
+        font-size: 4rem;
+        color: var(--accent-gold);
+        margin-bottom: 1.5rem;
+        animation: bounce 1s ease;
+        position: relative;
+        z-index: 1;
+    }
+
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+        40% {
+            transform: translateY(-20px);
+        }
+        60% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .thank-you-title {
+        font-size: 2.8rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: var(--text-white);
+        font-family: 'Playfair Display', serif;
+        line-height: 1.2;
+        position: relative;
+        z-index: 1;
+    }
+
+    .thank-you-subtitle {
+        font-size: 1.4rem;
+        color: var(--accent-gold);
+        margin-bottom: 2rem;
+        font-weight: 600;
+        position: relative;
+        z-index: 1;
+    }
+
+    .order-details {
+        background: rgba(40, 40, 40, 0.6);
+        border: 1px solid rgba(212, 175, 55, 0.1);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin: 2rem 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .order-id {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--accent-gold);
+        margin-bottom: 0.5rem;
+        font-family: 'Playfair Display', serif;
+    }
+
+    .order-message {
+        color: var(--text-gray);
+        line-height: 1.7;
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .confirmation-note {
+        color: var(--text-gray);
+        font-size: 0.95rem;
+        background: rgba(212, 175, 55, 0.1);
+        padding: 1rem;
+        border-radius: 10px;
+        margin-top: 1.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .shop-again-btn {
+        background: linear-gradient(135deg, var(--accent-gold) 0%, #B87333 100%);
+        color: var(--primary-bg);
+        border: none;
+        padding: 0.9rem 2.5rem;
+        border-radius: 30px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.8rem;
+        box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        position: relative;
+        z-index: 1;
+        text-decoration: none;
+    }
+
+    .shop-again-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(212, 175, 55, 0.6);
+        background: linear-gradient(135deg, var(--accent-gold-light) 0%, var(--accent-gold) 100%);
+    }
+
+    .elegant-divider {
+        height: 1px;
+        background: linear-gradient(90deg, transparent 0%, var(--accent-gold) 50%, transparent 100%);
+        margin: 2rem 0;
+        opacity: 0.6;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .thank-you-card {
+            padding: 2rem;
+            margin: 1rem;
+        }
+        
+        .thank-you-title {
+            font-size: 2.2rem;
+        }
+        
+        .thank-you-subtitle {
+            font-size: 1.2rem;
+        }
+        
+        .order-id {
+            font-size: 1.5rem;
+        }
+        
+        .shop-again-btn {
+            font-size: 1.1rem;
+            padding: 0.8rem 2rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .thank-you-title {
+            font-size: 1.8rem;
+        }
+        
+        .thank-you-subtitle {
+            font-size: 1.1rem;
+        }
+        
+        .order-id {
+            font-size: 1.4rem;
+        }
+        
+        .shop-again-btn {
+            font-size: 1rem;
+            padding: 0.7rem 1.8rem;
+        }
+        
+        .thank-you-icon {
+            font-size: 3rem;
+        }
+    }
+
+    /* Confetti effect simulation */
+    .confetti {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background-color: var(--accent-gold);
+        opacity: 0;
+        animation: confetti-fall 3s ease-in-out forwards;
+    }
+
+    @keyframes confetti-fall {
+        0% {
+            transform: translateY(-100px) rotate(0deg);
+            opacity: 0;
+        }
+        10% {
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(500px) rotate(720deg);
+            opacity: 0;
+        }
+    }
+</style>
+
+<div class="thank-you-container">
+    <div class="thank-you-card">
+        <div class="thank-you-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        
+        <h1 class="thank-you-title">شكراً لطلبك!</h1>
+        <h2 class="thank-you-subtitle">الوقت الثمين يستحق الأفضل</h2>
+        
+        <div class="elegant-divider"></div>
+        
+        <div class="order-details">
+            <div class="order-id">#{{ order.id }}</div>
+            <p class="order-message">تم استلام طلبك بنجاح وسيتم معالجته في أقرب وقت ممكن.</p>
+        </div>
+        
+        <p class="order-message">
+            تحقق من تفاصيل الطلب في صفحة <strong>طلباتي</strong> أو استلم رسالة تأكيد عبر البريد الإلكتروني.
+        </p>
+        
+        <div class="confirmation-note">
+            <i class="fas fa-info-circle me-2"></i>
+            سنتواصل معك عبر البريد الإلكتروني أو الهاتف لتأكيد التفاصيل النهائية للطلب.
+        </div>
+        
+        <a href="{% url 'products:list' %}" class="shop-again-btn">
+            <i class="fas fa-shopping-bag"></i> العودة للتسوق
+        </a>
+    </div>
+</div>
+
+<script>
+    // Create confetti effect
+    document.addEventListener('DOMContentLoaded', function() {
+        const thankYouCard = document.querySelector('.thank-you-card');
+        const colors = ['#D4AF37', '#B87333', '#E6C25D', '#FFFFFF'];
+        
+        // Create 20 confetti pieces
+        for (let i = 0; i < 20; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.animationDelay = Math.random() * 2 + 's';
+            confetti.style.width = (Math.random() * 8 + 6) + 'px';
+            confetti.style.height = confetti.style.width;
+            thankYouCard.appendChild(confetti);
+        }
+        
+        // Remove confetti after animation completes
+        setTimeout(() => {
+            document.querySelectorAll('.confetti').forEach(conf => conf.remove());
+        }, 3500);
+    });
+</script>
+{% endblock %}

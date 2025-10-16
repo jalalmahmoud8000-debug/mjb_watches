@@ -1,0 +1,364 @@
+<!-- new file -->
+{% extends 'base.html' %}
+
+{% block title %}قائمة الساعات - MJB{% endblock %}
+
+{% block content %}
+<style>
+    .filter-section {
+        background: rgba(30, 30, 30, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2rem;
+        padding: 0 1rem;
+    }
+
+    .product-card {
+        background: rgba(25, 25, 25, 0.9);
+        border: 1px solid rgba(212, 175, 55, 0.1);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.4s ease;
+        position: relative;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        border-color: rgba(212, 175, 55, 0.3);
+    }
+
+    .product-image {
+        height: 220px;
+        width: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+        background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
+    }
+
+    .product-card:hover .product-image {
+        transform: scale(1.05);
+    }
+
+    .card-body {
+        padding: 1.5rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-title {
+        font-size: 1.3rem;
+        margin-bottom: 0.8rem;
+        line-height: 1.3;
+        color: #FFFFFF;
+        transition: color 0.3s ease;
+    }
+
+    .product-title:hover {
+        color: var(--accent-gold);
+    }
+
+    .featured-badge {
+        background: linear-gradient(135deg, var(--accent-gold) 0%, #B87333 100%);
+        color: var(--primary-bg);
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        margin-right: 0.5rem;
+        display: inline-block;
+    }
+
+    .product-description {
+        color: var(--text-gray);
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin-bottom: 1rem;
+        flex-grow: 1;
+    }
+
+    .product-meta {
+        color: var(--text-gray);
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .product-meta i {
+        color: var(--accent-gold);
+        font-size: 0.9rem;
+    }
+
+    .product-price {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--accent-gold);
+        margin-bottom: 1.2rem;
+        font-family: 'Playfair Display', serif;
+    }
+
+    .btn-product {
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(184, 115, 51, 0.1) 100%);
+        color: var(--accent-gold);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        padding: 0.6rem 1.2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-align: center;
+        text-decoration: none;
+        display: block;
+        width: 100%;
+    }
+
+    .btn-product:hover {
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(184, 115, 51, 0.2) 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
+    }
+
+    .filter-btn {
+        background: linear-gradient(135deg, var(--accent-gold) 0%, #B87333 100%);
+        color: var(--primary-bg);
+        border: none;
+        padding: 0.6rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        margin-right: 0.5rem;
+    }
+
+    .filter-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+    }
+
+    .reset-btn {
+        background: transparent;
+        color: var(--text-white);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 0.6rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .reset-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .page-title {
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+        background: linear-gradient(to right, var(--text-white), var(--accent-gold));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-align: center;
+        padding: 2rem 0;
+    }
+
+    .no-products {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: rgba(30, 30, 30, 0.5);
+        border-radius: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .no-products i {
+        font-size: 3rem;
+        color: var(--accent-gold);
+        margin-bottom: 1rem;
+    }
+
+    .form-select, .form-control {
+        background: rgba(40, 40, 40, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--text-white);
+        border-radius: 8px;
+        padding: 0.6rem 1rem;
+    }
+
+    .form-select:focus, .form-control:focus {
+        background: rgba(40, 40, 40, 0.9);
+        border-color: var(--accent-gold);
+        box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
+        color: var(--text-white);
+    }
+
+    .form-select option {
+        background: var(--secondary-bg);
+        color: var(--text-white);
+    }
+
+    @media (max-width: 768px) {
+        .product-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+        }
+        
+        .filter-section {
+            padding: 1.5rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .product-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        
+        .btn-group-filter {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .filter-btn, .reset-btn {
+            width: 100%;
+            margin-right: 0;
+        }
+    }
+</style>
+
+<div class="container-fluid px-0">
+    <h2 class="page-title">قائمة الساعات{% if current_category %} - {{ current_category.name }}{% endif %}</h2>
+
+    <div class="container">
+        <div class="filter-section">
+            <form method="get" class="row g-3">
+                <div class="col-md-4 col-sm-12">
+                    <input type="search" name="q" value="{{ request.GET.q }}" class="form-control" placeholder="ابحث عن اسم أو وصف...">
+                </div>
+                <div class="col-md-2 col-sm-6">
+                    <select name="brand" class="form-select">
+                        <option value="">كل العلامات</option>
+                        {% for b in brands %}
+                        <option value="{{ b.id }}" {% if request.GET.brand == b.id|stringformat:"s" %}selected{% endif %}>{{ b.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2 col-sm-6">
+                    <select name="category" class="form-select">
+                        <option value="">كل التصنيفات</option>
+                        {% for c in categories %}
+                        <option value="{{ c.id }}" {% if request.GET.category == c.id|stringformat:"s" %}selected{% endif %}>{{ c.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2 col-sm-6">
+                    <select name="gender" class="form-select">
+                        <option value="">جميع الأنواع</option>
+                        <option value="M" {% if request.GET.gender == 'M' %}selected{% endif %}>رجالي</option>
+                        <option value="F" {% if request.GET.gender == 'F' %}selected{% endif %}>حريمي</option>
+                        <option value="U" {% if request.GET.gender == 'U' %}selected{% endif %}>Unisex</option>
+                    </select>
+                </div>
+                <div class="col-md-2 col-sm-6 d-flex align-items-end">
+                    <div class="btn-group-filter d-flex">
+                        <button class="filter-btn" type="submit">
+                            <i class="fas fa-filter me-1"></i>تصفية
+                        </button>
+                        <a class="reset-btn" href="{% url 'products:list' %}">
+                            <i class="fas fa-redo me-1"></i>إعادة
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="product-grid">
+            {% for p in products %}
+            <div class="product-card">
+                {% if p.image %}
+                <img src="{{ p.image.url }}" class="product-image" alt="{{ p.name }}">
+                {% else %}
+                <div class="product-image d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);">
+                    <i class="fas fa-clock text-muted" style="font-size: 3rem; opacity: 0.3;"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="product-title">
+                        <a href="{% url 'products:detail' p.slug %}" class="text-white text-decoration-none">
+                            {{ p.name }}
+                        </a>
+                        {% if p.is_featured %}
+                        <span class="featured-badge">مميز</span>
+                        {% endif %}
+                    </h5>
+                    <p class="product-description">{{ p.description|truncatechars:120 }}</p>
+                    <div class="product-meta">
+                        <i class="fas fa-tag"></i>
+                        <span>{{ p.brand }} &middot; 
+                            {% if p.gender == 'M' %}رجالي
+                            {% elif p.gender == 'F' %}حريمي
+                            {% else %}Unisex
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="product-price">{{ p.price }} ج.م</div>
+                    <a href="{% url 'products:detail' p.slug %}" class="btn-product">
+                        <i class="fas fa-eye me-2"></i>عرض التفاصيل
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="no-products">
+                    <i class="fas fa-search"></i>
+                    <h4 class="mb-3">لا توجد منتجات حالياً</h4>
+                    <p class="text-muted">عذراً، لم نعثر على أي ساعات تطابق معايير البحث الخاصة بك.</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+    // Add subtle hover effects to product cards
+    document.querySelectorAll('.product-card').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.borderColor = 'rgba(212, 175, 55, 0.4)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.borderColor = 'rgba(212, 175, 55, 0.1)';
+        });
+    });
+
+    // Smooth loading effect
+    document.addEventListener('DOMContentLoaded', function() {
+        const productGrid = document.querySelector('.product-grid');
+        if (productGrid) {
+            productGrid.style.opacity = '0';
+            productGrid.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                productGrid.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                productGrid.style.opacity = '1';
+                productGrid.style.transform = 'translateY(0)';
+            }, 100);
+        }
+    });
+</script>
+{% endblock %}

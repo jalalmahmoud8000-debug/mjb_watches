@@ -1,0 +1,371 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }} - MJB{% endblock %}
+
+{% block content %}
+<style>
+    .product-detail-container {
+        padding: 2rem 0;
+    }
+
+    .product-image-section {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        background: linear-gradient(135deg, rgba(25, 25, 25, 0.8) 0%, rgba(35, 35, 35, 0.8) 100%);
+        border-radius: 20px;
+        border: 1px solid rgba(212, 175, 55, 0.1);
+        backdrop-filter: blur(10px);
+        height: 100%;
+        min-height: 500px;
+    }
+
+    .product-image {
+        max-width: 100%;
+        max-height: 450px;
+        object-fit: contain;
+        transition: transform 0.6s ease;
+        filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.5));
+    }
+
+    .product-image-section:hover .product-image {
+        transform: scale(1.02);
+    }
+
+    .product-info-section {
+        background: rgba(25, 25, 25, 0.9);
+        border-radius: 20px;
+        padding: 2.5rem;
+        border: 1px solid rgba(212, 175, 55, 0.1);
+        backdrop-filter: blur(10px);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-title {
+        font-size: 2.2rem;
+        line-height: 1.2;
+        margin-bottom: 1rem;
+        color: #FFFFFF;
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+    }
+
+    .featured-badge {
+        background: linear-gradient(135deg, var(--accent-gold) 0%, #B87333 100%);
+        color: var(--primary-bg);
+        font-weight: 700;
+        padding: 0.3rem 0.8rem;
+        border-radius: 25px;
+        font-size: 0.9rem;
+        margin-right: 0.8rem;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .product-meta {
+        color: var(--text-gray);
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .product-meta i {
+        color: var(--accent-gold);
+        font-size: 1rem;
+    }
+
+    .product-price {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--accent-gold);
+        margin-bottom: 1.5rem;
+        font-family: 'Playfair Display', serif;
+        line-height: 1.1;
+    }
+
+    .product-description {
+        color: var(--text-gray);
+        line-height: 1.7;
+        margin-bottom: 2rem;
+        font-size: 1.05rem;
+        flex-grow: 1;
+    }
+
+    .quantity-control {
+        margin-bottom: 2rem;
+    }
+
+    .quantity-label {
+        font-size: 1.1rem;
+        margin-bottom: 0.8rem;
+        color: var(--text-white);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .quantity-input {
+        background: rgba(40, 40, 40, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--text-white);
+        border-radius: 10px;
+        padding: 0.8rem 1.2rem;
+        font-size: 1.1rem;
+        width: 120px;
+        transition: all 0.3s ease;
+    }
+
+    .quantity-input:focus {
+        outline: none;
+        border-color: var(--accent-gold);
+        box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
+        background: rgba(40, 40, 40, 0.9);
+    }
+
+    .add-to-cart-btn {
+        background: linear-gradient(135deg, var(--accent-gold) 0%, #B87333 100%);
+        color: var(--primary-bg);
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.8rem;
+        box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+    }
+
+    .add-to-cart-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
+        background: linear-gradient(135deg, var(--accent-gold-light) 0%, var(--accent-gold) 100%);
+    }
+
+    .add-to-cart-btn:active {
+        transform: translateY(0);
+    }
+
+    .error-alert {
+        background: rgba(220, 53, 69, 0.1);
+        border: 1px solid rgba(220, 53, 69, 0.3);
+        color: #ff6b6b;
+        border-radius: 15px;
+        padding: 2rem;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .error-alert i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: #ff6b6b;
+    }
+
+    .back-to-products {
+        color: var(--text-gray);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+        transition: color 0.3s ease;
+    }
+
+    .back-to-products:hover {
+        color: var(--accent-gold);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+        .product-image-section {
+            min-height: 400px;
+            padding: 1.5rem;
+        }
+        
+        .product-info-section {
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .product-title {
+            font-size: 1.8rem;
+        }
+        
+        .product-price {
+            font-size: 2.2rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .product-image-section {
+            min-height: 350px;
+        }
+        
+        .product-title {
+            font-size: 1.6rem;
+        }
+        
+        .product-price {
+            font-size: 2rem;
+        }
+        
+        .product-info-section {
+            padding: 1.5rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .product-image-section {
+            min-height: 300px;
+            padding: 1rem;
+        }
+        
+        .product-title {
+            font-size: 1.4rem;
+        }
+        
+        .product-price {
+            font-size: 1.8rem;
+        }
+        
+        .add-to-cart-btn {
+            font-size: 1.1rem;
+            padding: 0.8rem 1.5rem;
+        }
+    }
+
+    /* Loading animation for image */
+    .image-loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
+    }
+
+    .image-loading i {
+        font-size: 3rem;
+        color: var(--accent-gold);
+        opacity: 0.5;
+        animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+        0% { opacity: 0.3; }
+        50% { opacity: 0.7; }
+        100% { opacity: 0.3; }
+    }
+</style>
+
+<div class="container-fluid product-detail-container">
+    {% if not product %}
+        <div class="container">
+            <div class="error-alert">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>المنتج غير موجود</h3>
+                <p>عذراً، يبدو أن المنتج الذي تبحث عنه غير موجود أو غير مفعل حالياً.</p>
+                <a href="{% url 'products:list' %}" class="back-to-products">
+                    <i class="fas fa-arrow-right"></i> العودة إلى قائمة الساعات
+                </a>
+            </div>
+        </div>
+    {% else %}
+        <div class="container">
+            <a href="{% url 'products:list' %}" class="back-to-products">
+                <i class="fas fa-arrow-right"></i> العودة إلى قائمة الساعات
+            </a>
+            
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="product-image-section">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" class="product-image" alt="{{ product.name }}" loading="lazy">
+                        {% else %}
+                            <div class="image-loading">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="product-info-section">
+                        <h1 class="product-title">
+                            {{ product.name }}
+                            {% if product.is_featured %}
+                                <span class="featured-badge">مميز</span>
+                            {% endif %}
+                        </h1>
+                        
+                        <div class="product-meta">
+                            <i class="fas fa-tag"></i>
+                            <span>{{ product.brand }} &middot; 
+                                {% if product.gender == 'M' %}رجالي
+                                {% elif product.gender == 'F' %}حريمي
+                                {% else %}Unisex
+                                {% endif %}
+                            </span>
+                        </div>
+                        
+                        <div class="product-price">{{ product.price }} ج.م</div>
+                        
+                        <p class="product-description">{{ product.description }}</p>
+                        
+                        <form method="post" action="{% url 'cart:add' %}" class="mt-auto">
+                            {% csrf_token %}
+                            <input type="hidden" name="slug" value="{{ product.slug }}">
+                            
+                            <div class="quantity-control">
+                                <label for="qty" class="quantity-label">
+                                    <i class="fas fa-hashtag"></i> الكمية
+                                </label>
+                                <input type="number" id="qty" name="quantity" value="1" min="1" max="99" class="quantity-input">
+                            </div>
+                            
+                            <button type="submit" class="add-to-cart-btn">
+                                <i class="fas fa-shopping-cart"></i> أضف إلى السلة
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    // Add smooth hover effect to product image
+    document.addEventListener('DOMContentLoaded', function() {
+        const productImage = document.querySelector('.product-image');
+        if (productImage) {
+            productImage.style.opacity = '0';
+            productImage.style.transform = 'scale(0.95)';
+            
+            setTimeout(() => {
+                productImage.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                productImage.style.opacity = '1';
+                productImage.style.transform = 'scale(1)';
+            }, 200);
+        }
+        
+        // Quantity input validation
+        const quantityInput = document.getElementById('qty');
+        if (quantityInput) {
+            quantityInput.addEventListener('change', function() {
+                if (this.value < 1) this.value = 1;
+                if (this.value > 99) this.value = 99;
+            });
+        }
+    });
+</script>
+{% endblock %}

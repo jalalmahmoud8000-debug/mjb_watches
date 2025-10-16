@@ -1,0 +1,336 @@
+{% block style %}
+<style>
+    .navbar {
+        background: rgba(15, 15, 15, 0.95);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+        padding: 1rem 0;
+        transition: all 0.3s ease;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+
+    .navbar.scrolled {
+        background: rgba(10, 10, 10, 0.98);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        padding: 0.8rem 0;
+    }
+
+    .navbar-brand {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        font-size: 1.9rem;
+        color: var(--accent-gold) !important;
+        text-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .navbar-brand i {
+        font-size: 1.6rem;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% { text-shadow: 0 0 12px rgba(212, 175, 55, 0.4); }
+        50% { text-shadow: 0 0 20px rgba(212, 175, 55, 0.6); }
+        100% { text-shadow: 0 0 12px rgba(212, 175, 55, 0.4); }
+    }
+
+    .nav-link {
+        color: var(--text-white) !important;
+        font-weight: 500;
+        font-size: 1.05rem;
+        position: relative;
+        padding: 0.5rem 0.8rem;
+        margin: 0 0.3rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .nav-link:hover {
+        color: var(--accent-gold) !important;
+        background: rgba(212, 175, 55, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .nav-item .nav-link.active {
+        color: var(--accent-gold) !important;
+        background: rgba(212, 175, 55, 0.15);
+    }
+
+    .dropdown-toggle::after {
+        border-top: 0.3em solid var(--text-white);
+        border-right: 0.3em solid transparent;
+        border-bottom: 0;
+        border-left: 0.3em solid transparent;
+        margin-right: 0.3rem;
+        transition: transform 0.3s ease;
+    }
+
+    .dropdown-toggle.show::after {
+        transform: rotate(180deg);
+        border-top-color: var(--accent-gold);
+    }
+
+    .dropdown-menu {
+        background: rgba(25, 25, 25, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        border-radius: 12px;
+        padding: 0.5rem 0;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        min-width: 220px;
+    }
+
+    .dropdown-item {
+        color: var(--text-white) !important;
+        padding: 0.6rem 1.2rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        border-radius: 0 8px 8px 0;
+        margin: 0 0.5rem;
+        margin-bottom: 0.2rem;
+    }
+
+    .dropdown-item:hover {
+        background: rgba(212, 175, 55, 0.15);
+        color: var(--accent-gold) !important;
+        transform: translateX(4px);
+    }
+
+    .dropdown-divider {
+        border-color: rgba(212, 175, 55, 0.2);
+        margin: 0.3rem 0.5rem;
+    }
+
+    .cart-link {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 40px;
+        padding: 0.5rem 0.3rem !important;
+    }
+
+    .cart-icon {
+        font-size: 1.3rem;
+        color: var(--text-white);
+        transition: all 0.3s ease;
+    }
+
+    .cart-link:hover .cart-icon {
+        color: var(--accent-gold);
+        transform: scale(1.1);
+    }
+
+    .cart-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: linear-gradient(135deg, var(--accent-gold) 0%, #B87333 100%);
+        color: var(--primary-bg);
+        font-weight: 700;
+        font-size: 0.7rem;
+        padding: 0.2rem 0.4rem;
+        border-radius: 10px;
+        min-width: 18px;
+        height: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .cart-price {
+        font-size: 0.75rem;
+        color: var(--text-gray);
+        margin-top: 2px;
+        font-weight: 400;
+        white-space: nowrap;
+    }
+
+    .user-dropdown .dropdown-toggle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(212, 175, 55, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-white);
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .user-dropdown .dropdown-toggle i {
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+
+    .user-dropdown .dropdown-toggle:hover {
+        background: var(--accent-gold);
+        color: var(--primary-bg);
+        transform: translateY(-2px);
+    }
+
+    .navbar-toggler {
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        padding: 0.25rem 0.5rem;
+    }
+
+    .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28212, 175, 55, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+
+    .checkout-btn {
+        background: linear-gradient(135deg, var(--accent-gold) 0%, #B87333 100%);
+        color: var(--primary-bg);
+        border: none;
+        padding: 0.4rem 0.8rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+        margin-top: 0.3rem;
+        margin-left: 0.5rem;
+        white-space: nowrap;
+    }
+
+    .checkout-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+        background: linear-gradient(135deg, var(--accent-gold-light) 0%, var(--accent-gold) 100%);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+        .navbar-brand {
+            font-size: 1.7rem;
+        }
+        
+        .nav-link {
+            font-size: 1rem;
+            margin: 0 0.2rem;
+        }
+        
+        .cart-link {
+            min-width: 35px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .navbar-brand {
+            font-size: 1.6rem;
+        }
+        
+        .cart-price {
+            display: none;
+        }
+        
+        .dropdown-menu {
+            min-width: 180px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .navbar-brand {
+            font-size: 1.5rem;
+        }
+        
+        .nav-link {
+            padding: 0.4rem 0.6rem;
+            font-size: 0.95rem;
+        }
+        
+        .user-dropdown .dropdown-toggle {
+            width: 35px;
+            height: 35px;
+        }
+    }
+</style>
+{% endblock %}
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <i class="fas fa-clock"></i>
+            MJB Watches
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="/">الرئيسية</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="productsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        الساعات
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="productsDropdown">
+                        <li><a class="dropdown-item" href="{% url 'products:list' %}">عرض كل الساعات</a></li>
+                        <li><a class="dropdown-item" href="{% url 'products:categories' %}">التصنيفات</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'about' %}">من نحن</a>
+                </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'orders:list' %}">الطلبات</a>
+                    </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'contact' %}">اتصل بنا</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ms-3">
+                <li class="nav-item">
+                    <a class="nav-link cart-link" href="{% url 'cart:detail' %}">
+                        <i class="fas fa-shopping-cart cart-icon"></i>
+                        {% if cart_items_count and cart_items_count > 0 %}
+                        <span class="cart-badge">{{ cart_items_count }}</span>
+                        {% endif %}
+                        {% if cart_total_price %}
+                        <small class="cart-price">{{ cart_total_price }} ج.م</small>
+                        {% endif %}
+                    </a>
+                </li>
+                <li class="nav-item user-dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        {% if request.user.is_authenticated %}
+                        <li><a class="dropdown-item" href="{% url 'accounts:profile' %}">الملف الشخصي</a></li>
+                        <li><a class="dropdown-item" href="{% url 'accounts:orders' %}">طلباتي</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'accounts:logout' %}">تسجيل الخروج</a></li>
+                        {% else %}
+                        <li><a class="dropdown-item" href="{% url 'accounts:login' %}">تسجيل دخول</a></li>
+                        <li><a class="dropdown-item" href="{% url 'accounts:register' %}">انشاء حساب</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+{# زر الدفع المباشر - سيتم إضافته في مكان مناسب في القالب الرئيسي إذا لزم الأمر #}
+{% if cart_items_count and cart_items_count > 0 %}
+<script>
+    // Add scroll effect to navbar
+    window.addEventListener('scroll', function() {
+        const navbar = document.querySelector('.navbar');
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+</script>
+{% endif %}

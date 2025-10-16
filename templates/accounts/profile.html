@@ -1,0 +1,335 @@
+{% extends 'base.html' %}
+
+{% block title %}الملف الشخصي{% endblock %}
+
+{% block content %}
+<style>
+    .profile-container {
+        padding: 3rem 0;
+    }
+
+    .profile-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    }
+
+    .profile-title {
+        font-size: 2.8rem;
+        font-weight: 700;
+        color: var(--text-white);
+        font-family: 'Playfair Display', serif;
+        margin-bottom: 1rem;
+        background: linear-gradient(to right, var(--text-white), var(--accent-gold));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .profile-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 2.5rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .profile-form-section, .profile-actions-section {
+        background: rgba(25, 25, 25, 0.9);
+        border: 1px solid rgba(212, 175, 55, 0.1);
+        border-radius: 20px;
+        padding: 2.5rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .form-section-title {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: var(--accent-gold);
+        margin-bottom: 2rem;
+        font-family: 'Playfair Display', serif;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.8rem;
+    }
+
+    .form-label {
+        font-size: 1.1rem;
+        color: var(--text-white);
+        margin-bottom: 0.8rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .form-control {
+        background: rgba(40, 40, 40, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--text-white);
+        border-radius: 12px;
+        padding: 0.9rem 1.3rem;
+        font-size: 1.05rem;
+        transition: all 0.3s ease;
+        width: 100%;
+        min-height: 48px;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--accent-gold);
+        box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
+        background: rgba(40, 40, 40, 0.9);
+    }
+
+    .form-control::placeholder {
+        color: var(--text-gray);
+        opacity: 0.7;
+    }
+
+    .form-control.error {
+        border-color: #DC3545;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
+
+    .error-text {
+        color: #ff6b6b;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+        display: block;
+    }
+
+    .save-btn {
+        background: linear-gradient(135deg, var(--accent-gold) 0%, #B87333 100%);
+        color: var(--primary-bg);
+        border: none;
+        padding: 1rem 2.5rem;
+        border-radius: 15px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.8rem;
+        box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        font-family: 'Playfair Display', serif;
+        cursor: pointer;
+    }
+
+    .save-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(212, 175, 55, 0.6);
+        background: linear-gradient(135deg, var(--accent-gold-light) 0%, var(--accent-gold) 100%);
+    }
+
+    .actions-section-title {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: var(--accent-gold);
+        margin-bottom: 2rem;
+        font-family: 'Playfair Display', serif;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .action-btn {
+        background: transparent;
+        color: var(--text-white);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 0.9rem 1.8rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.8rem;
+        margin-bottom: 1.2rem;
+        width: 100%;
+    }
+
+    .action-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .action-btn.password-btn {
+        border-color: rgba(212, 175, 55, 0.3);
+        color: var(--accent-gold);
+    }
+
+    .action-btn.password-btn:hover {
+        background: rgba(212, 175, 55, 0.1);
+        border-color: var(--accent-gold);
+    }
+
+    .action-btn.orders-btn {
+        border-color: rgba(23, 162, 184, 0.3);
+        color: #17A2B8;
+    }
+
+    .action-btn.orders-btn:hover {
+        background: rgba(23, 162, 184, 0.1);
+        border-color: #17A2B8;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+        .profile-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .profile-title {
+            font-size: 2.4rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .profile-container {
+            padding: 2rem 0;
+        }
+        
+        .profile-title {
+            font-size: 2.2rem;
+        }
+        
+        .profile-form-section, .profile-actions-section {
+            padding: 2rem;
+        }
+        
+        .form-section-title, .actions-section-title {
+            font-size: 1.6rem;
+        }
+        
+        .form-control {
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+        }
+        
+        .save-btn {
+            font-size: 1.1rem;
+            padding: 0.9rem 2rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .profile-title {
+            font-size: 2rem;
+        }
+        
+        .profile-form-section, .profile-actions-section {
+            padding: 1.5rem;
+            margin: 0 0.5rem;
+        }
+        
+        .form-label {
+            font-size: 1rem;
+        }
+        
+        .action-btn {
+            padding: 0.8rem 1.5rem;
+            font-size: 0.95rem;
+        }
+    }
+</style>
+
+<div class="container-fluid profile-container">
+    <div class="container">
+        <div class="profile-header">
+            <h1 class="profile-title">الملف الشخصي</h1>
+        </div>
+        
+        <div class="profile-grid">
+            <!-- Profile Form Section -->
+            <div class="profile-form-section">
+                <h2 class="form-section-title">
+                    <i class="fas fa-user-edit"></i> معلومات الحساب
+                </h2>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}" class="form-label">
+                            {% if field.field.widget.input_type == 'email' %}
+                                <i class="fas fa-envelope"></i>
+                            {% elif field.name == 'first_name' %}
+                                <i class="fas fa-user"></i>
+                            {% elif field.name == 'last_name' %}
+                                <i class="fas fa-user-friends"></i>
+                            {% else %}
+                                <i class="fas fa-info-circle"></i>
+                            {% endif %}
+                            {{ field.label }}
+                        </label>
+                        
+                        {{ field }}
+                        
+                        {% if field.errors %}
+                            <span class="error-text">
+                                {% for error in field.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </span>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    
+                    <button type="submit" class="save-btn">
+                        <i class="fas fa-save"></i> حفظ التغييرات
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Profile Actions Section -->
+            <div class="profile-actions-section">
+                <h2 class="actions-section-title">
+                    <i class="fas fa-cog"></i> إجراءات إضافية
+                </h2>
+                
+                <a href="{% url 'accounts:password_change' %}" class="action-btn password-btn">
+                    <i class="fas fa-lock"></i> تغيير كلمة المرور
+                </a>
+                
+                <a href="{% url 'accounts:orders' %}" class="action-btn orders-btn">
+                    <i class="fas fa-box"></i> عرض الطلبات السابقة
+                </a>
+                
+                <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                    <p style="color: var(--text-gray); font-size: 0.95rem; line-height: 1.6;">
+                        <i class="fas fa-info-circle me-2" style="color: var(--accent-gold);"></i>
+                        يمكنك تحديث معلومات حسابك في أي وقت. تأكد من أن بريدك الإلكتروني محدث لاستلام إشعارات الطلبات.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Add custom styling for form fields
+    document.addEventListener('DOMContentLoaded', function() {
+        const formControls = document.querySelectorAll('.form-control');
+        formControls.forEach(control => {
+            control.classList.add('form-control');
+        });
+        
+        // Add error class to fields with errors
+        const errorFields = document.querySelectorAll('input:invalid, textarea:invalid');
+        errorFields.forEach(field => {
+            field.classList.add('error');
+        });
+    });
+</script>
+{% endblock %}
+

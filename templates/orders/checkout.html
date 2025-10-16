@@ -1,0 +1,474 @@
+{% extends 'base.html' %}
+
+{% block title %}الدفع - MJB{% endblock %}
+
+{% block content %}
+<style>
+    .checkout-container {
+        padding: 3rem 0;
+    }
+
+    .checkout-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    }
+
+    .checkout-title {
+        font-size: 2.8rem;
+        font-weight: 700;
+        color: var(--text-white);
+        font-family: 'Playfair Display', serif;
+        margin-bottom: 1rem;
+        background: linear-gradient(to right, var(--text-white), var(--accent-gold));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .checkout-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 2.5rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .checkout-form-section, .order-summary-section {
+        background: rgba(25, 25, 25, 0.9);
+        border: 1px solid rgba(212, 175, 55, 0.1);
+        border-radius: 20px;
+        padding: 2.5rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .form-section-title {
+        font-size: 1.6rem;
+        font-weight: 600;
+        color: var(--accent-gold);
+        margin-bottom: 2rem;
+        font-family: 'Playfair Display', serif;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-size: 1.05rem;
+        color: var(--text-white);
+        margin-bottom: 0.6rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .form-control, .form-select {
+        background: rgba(40, 40, 40, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--text-white);
+        border-radius: 12px;
+        padding: 0.8rem 1.2rem;
+        font-size: 1.05rem;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+
+    .form-control:focus, .form-select:focus {
+        outline: none;
+        border-color: var(--accent-gold);
+        box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
+        background: rgba(40, 40, 40, 0.9);
+    }
+
+    .form-control::placeholder {
+        color: var(--text-gray);
+        opacity: 0.7;
+    }
+
+    .payment-methods {
+        display: grid;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .payment-method-option {
+        background: rgba(40, 40, 40, 0.6);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .payment-method-option:hover {
+        border-color: var(--accent-gold);
+        background: rgba(212, 175, 55, 0.1);
+    }
+
+    .payment-method-option input[type="radio"] {
+        width: 20px;
+        height: 20px;
+        accent-color: var(--accent-gold);
+    }
+
+    .payment-method-info {
+        flex: 1;
+    }
+
+    .payment-method-name {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--text-white);
+        margin-bottom: 0.3rem;
+    }
+
+    .payment-method-desc {
+        font-size: 0.9rem;
+        color: var(--text-gray);
+        line-height: 1.4;
+    }
+
+    .order-summary-title {
+        font-size: 1.6rem;
+        font-weight: 600;
+        color: var(--accent-gold);
+        margin-bottom: 2rem;
+        font-family: 'Playfair Display', serif;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .cart-items {
+        margin-bottom: 2rem;
+    }
+
+    .cart-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .cart-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .item-info {
+        flex: 1;
+    }
+
+    .item-name {
+        font-size: 1.05rem;
+        color: var(--text-white);
+        font-weight: 600;
+        margin-bottom: 0.2rem;
+    }
+
+    .item-quantity {
+        font-size: 0.9rem;
+        color: var(--text-gray);
+    }
+
+    .item-price {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--accent-gold);
+        min-width: 100px;
+        text-align: right;
+    }
+
+    .order-total {
+        background: rgba(40, 40, 40, 0.6);
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .total-label {
+        font-size: 1.2rem;
+        color: var(--text-gray);
+        margin-bottom: 0.8rem;
+    }
+
+    .total-amount {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--accent-gold);
+        font-family: 'Playfair Display', serif;
+        margin-bottom: 0;
+    }
+
+    .payment-note {
+        background: rgba(212, 175, 55, 0.1);
+        border-left: 3px solid var(--accent-gold);
+        padding: 1rem;
+        border-radius: 0 8px 8px 0;
+        margin-top: 1.5rem;
+        font-size: 0.9rem;
+        color: var(--text-gray);
+        line-height: 1.5;
+    }
+
+    .confirm-btn {
+        background: linear-gradient(135deg, var(--accent-gold) 0%, #B87333 100%);
+        color: var(--primary-bg);
+        border: none;
+        padding: 1rem 2.5rem;
+        border-radius: 15px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.8rem;
+        box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        font-family: 'Playfair Display', serif;
+    }
+
+    .confirm-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(212, 175, 55, 0.6);
+        background: linear-gradient(135deg, var(--accent-gold-light) 0%, var(--accent-gold) 100%);
+    }
+
+    .back-to-cart {
+        color: var(--text-gray);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+        transition: color 0.3s ease;
+        font-weight: 500;
+    }
+
+    .back-to-cart:hover {
+        color: var(--accent-gold);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+        .checkout-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .checkout-title {
+            font-size: 2.4rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .checkout-container {
+            padding: 2rem 0;
+        }
+        
+        .checkout-title {
+            font-size: 2.2rem;
+        }
+        
+        .checkout-form-section, .order-summary-section {
+            padding: 2rem;
+        }
+        
+        .form-section-title, .order-summary-title {
+            font-size: 1.4rem;
+        }
+        
+        .total-amount {
+            font-size: 1.8rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .checkout-title {
+            font-size: 2rem;
+        }
+        
+        .checkout-form-section, .order-summary-section {
+            padding: 1.5rem;
+        }
+        
+        .form-control, .form-select {
+            padding: 0.7rem 1rem;
+            font-size: 1rem;
+        }
+        
+        .confirm-btn {
+            font-size: 1.1rem;
+            padding: 0.9rem 2rem;
+        }
+        
+        .total-amount {
+            font-size: 1.6rem;
+        }
+    }
+</style>
+
+<div class="container-fluid checkout-container">
+    <div class="container">
+        <a href="{% url 'cart:detail' %}" class="back-to-cart">
+            <i class="fas fa-arrow-right"></i> العودة إلى السلة
+        </a>
+        
+        <div class="checkout-header">
+            <h1 class="checkout-title">إتمام الطلب</h1>
+        </div>
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="checkout-grid">
+                <!-- Checkout Form Section -->
+                <div class="checkout-form-section">
+                    <h2 class="form-section-title">
+                        <i class="fas fa-user-edit"></i> معلومات التسليم
+                    </h2>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-user"></i> الاسم الأول
+                        </label>
+                        <input type="text" name="first_name" class="form-control" required placeholder="أدخل اسمك الأول">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-user-friends"></i> اسم العائلة
+                        </label>
+                        <input type="text" name="last_name" class="form-control" required placeholder="أدخل اسم عائلتك">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-envelope"></i> البريد الإلكتروني
+                        </label>
+                        <input type="email" name="email" class="form-control" required placeholder="أدخل بريدك الإلكتروني">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-mobile-alt"></i> رقم الموبايل
+                        </label>
+                        <input type="text" name="mobile" class="form-control" required placeholder="أدخل رقم موبايلك">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-map-marker-alt"></i> العنوان
+                        </label>
+                        <textarea name="address" class="form-control" rows="4" required placeholder="أدخل عنوان التسليم الكامل"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-credit-card"></i> طريقة الدفع
+                        </label>
+                        <div class="payment-methods">
+                            <label class="payment-method-option">
+                                <input type="radio" name="payment_method" value="instapay" required checked>
+                                <div class="payment-method-info">
+                                    <div class="payment-method-name">Instapay</div>
+                                    <div class="payment-method-desc">تحويل بنكي بعد الاستلام</div>
+                                </div>
+                            </label>
+                            
+                            <label class="payment-method-option">
+                                <input type="radio" name="payment_method" value="ewallet">
+                                <div class="payment-method-info">
+                                    <div class="payment-method-name">محفظة إلكترونية</div>
+                                    <div class="payment-method-desc">دفع إلكتروني بعد الاستلام</div>
+                                </div>
+                            </label>
+                            
+                            <label class="payment-method-option">
+                                <input type="radio" name="payment_method" value="cod">
+                                <div class="payment-method-info">
+                                    <div class="payment-method-name">الدفع عند الاستلام</div>
+                                    <div class="payment-method-desc">دفع نقداً عند التسليم</div>
+                                </div>
+                            </label>
+                        </div>
+                        
+                        <div class="payment-note">
+                            <i class="fas fa-info-circle me-2"></i>
+                            المدفوعات عبر Instapay والمحفظة تُسجّل هنا كـ "قيد الانتظار" ويتم تحصيلها/تأكيدها بعد التسليم.
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Order Summary Section -->
+                <div class="order-summary-section">
+                    <h2 class="order-summary-title">
+                        <i class="fas fa-shopping-bag"></i> ملخص الطلب
+                    </h2>
+                    
+                    <div class="cart-items">
+                        {% for item in cart.items.all %}
+                        <div class="cart-item">
+                            <div class="item-info">
+                                <div class="item-name">{{ item.product.name }}</div>
+                                <div class="item-quantity">الكمية: {{ item.quantity }}</div>
+                            </div>
+                            <div class="item-price">{{ item.total_price }} ج.م</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="order-total">
+                        <div class="total-label">المبلغ الإجمالي</div>
+                        <div class="total-amount">{{ cart.total_price }} ج.م</div>
+                    </div>
+                    
+                    <button type="submit" class="confirm-btn">
+                        <i class="fas fa-check-circle"></i> تأكيد الطلب
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Add interactivity to payment method selection
+    document.addEventListener('DOMContentLoaded', function() {
+        const paymentOptions = document.querySelectorAll('.payment-method-option');
+        paymentOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                const radio = this.querySelector('input[type="radio"]');
+                radio.checked = true;
+                
+                // Remove active class from all options
+                paymentOptions.forEach(opt => {
+                    opt.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                    opt.style.background = 'rgba(40, 40, 40, 0.6)';
+                });
+                
+                // Add active class to selected option
+                this.style.borderColor = 'var(--accent-gold)';
+                this.style.background = 'rgba(212, 175, 55, 0.15)';
+            });
+        });
+        
+        // Initialize the first option as selected
+        if (paymentOptions.length > 0) {
+            const firstOption = paymentOptions[0];
+            firstOption.style.borderColor = 'var(--accent-gold)';
+            firstOption.style.background = 'rgba(212, 175, 55, 0.15)';
+        }
+    });
+</script>
+{% endblock %}
+

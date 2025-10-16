@@ -1,0 +1,416 @@
+{% extends 'base.html' %}
+
+{% block title %}اتصل بنا - MJB Watches{% endblock %}
+
+{% block content %}
+<style>
+    .contact-hero {
+        padding: 4.5rem 1rem;
+        text-align: center;
+        background: linear-gradient(135deg, rgba(15, 15, 15, 0.8) 0%, rgba(25, 25, 25, 0.9) 100%);
+        border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+        margin-bottom: 3rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .contact-hero::before {
+        content: '';
+        position: absolute;
+        top: -100px;
+        right: -100px;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, transparent 70%);
+        border-radius: 50%;
+        z-index: 1;
+    }
+
+    .contact-hero::after {
+        content: '';
+        position: absolute;
+        bottom: -150px;
+        left: -150px;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(212, 175, 55, 0.03) 0%, transparent 70%);
+        border-radius: 50%;
+        z-index: 1;
+    }
+
+    .contact-title {
+        font-size: 3.5rem;
+        font-weight: 700;
+        color: var(--text-white);
+        font-family: 'Playfair Display', serif;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(to right, var(--text-white), var(--accent-gold));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        position: relative;
+        z-index: 2;
+    }
+
+    .contact-subtitle {
+        font-size: 1.5rem;
+        color: var(--text-gray);
+        line-height: 1.7;
+        max-width: 700px;
+        margin: 0 auto;
+        font-weight: 400;
+        position: relative;
+        z-index: 2;
+    }
+
+    .contact-container {
+        max-width: 900px;
+        margin: 0 auto 3rem;
+        padding: 0 1rem;
+    }
+
+    .contact-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 2.5rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .contact-form-section, .contact-info-section {
+        background: rgba(25, 25, 25, 0.9);
+        border: 1px solid rgba(212, 175, 55, 0.1);
+        border-radius: 20px;
+        padding: 2.5rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .form-section-title {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: var(--accent-gold);
+        margin-bottom: 2rem;
+        font-family: 'Playfair Display', serif;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.8rem;
+    }
+
+    .form-label {
+        font-size: 1.1rem;
+        color: var(--text-white);
+        margin-bottom: 0.8rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .form-control {
+        background: rgba(40, 40, 40, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--text-white);
+        border-radius: 12px;
+        padding: 0.9rem 1.3rem;
+        font-size: 1.05rem;
+        transition: all 0.3s ease;
+        width: 100%;
+        min-height: 48px;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--accent-gold);
+        box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
+        background: rgba(40, 40, 40, 0.9);
+    }
+
+    .form-control::placeholder {
+        color: var(--text-gray);
+        opacity: 0.7;
+    }
+
+    textarea.form-control {
+        min-height: 160px;
+        resize: vertical;
+    }
+
+    .submit-btn {
+        background: linear-gradient(135deg, var(--accent-gold) 0%, #B87333 100%);
+        color: var(--primary-bg);
+        border: none;
+        padding: 1rem 2.5rem;
+        border-radius: 15px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.8rem;
+        box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        font-family: 'Playfair Display', serif;
+        cursor: pointer;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(212, 175, 55, 0.6);
+        background: linear-gradient(135deg, var(--accent-gold-light) 0%, var(--accent-gold) 100%);
+    }
+
+    .info-section-title {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: var(--accent-gold);
+        margin-bottom: 2rem;
+        font-family: 'Playfair Display', serif;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .contact-info-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .contact-info-item:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+    }
+
+    .info-icon {
+        width: 50px;
+        height: 50px;
+        background: rgba(212, 175, 55, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        color: var(--accent-gold);
+        flex-shrink: 0;
+    }
+
+    .info-content h5 {
+        font-size: 1.2rem;
+        color: var(--text-white);
+        margin-bottom: 0.3rem;
+        font-weight: 600;
+    }
+
+    .info-content p {
+        color: var(--text-gray);
+        line-height: 1.6;
+        margin-bottom: 0;
+        font-size: 1.05rem;
+    }
+
+    .success-alert {
+        background: rgba(40, 167, 69, 0.15);
+        border: 1px solid rgba(40, 167, 69, 0.3);
+        color: #28A745;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+
+    .success-alert i {
+        font-size: 2rem;
+        flex-shrink: 0;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+        .contact-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .contact-title {
+            font-size: 3rem;
+        }
+        
+        .contact-subtitle {
+            font-size: 1.4rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .contact-hero {
+            padding: 3.5rem 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .contact-title {
+            font-size: 2.6rem;
+        }
+        
+        .contact-subtitle {
+            font-size: 1.3rem;
+        }
+        
+        .contact-form-section, .contact-info-section {
+            padding: 2rem;
+        }
+        
+        .form-section-title, .info-section-title {
+            font-size: 1.6rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .contact-title {
+            font-size: 2.2rem;
+        }
+        
+        .contact-subtitle {
+            font-size: 1.2rem;
+        }
+        
+        .contact-form-section, .contact-info-section {
+            padding: 1.5rem;
+            margin: 0 0.5rem;
+        }
+        
+        .form-control {
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+        }
+        
+        .submit-btn {
+            font-size: 1.1rem;
+            padding: 0.9rem 2rem;
+        }
+        
+        .info-icon {
+            width: 45px;
+            height: 45px;
+            font-size: 1.1rem;
+        }
+        
+        .info-content h5 {
+            font-size: 1.1rem;
+        }
+    }
+</style>
+
+<section class="contact-hero">
+    <div class="container">
+        <h1 class="contact-title">اتصل بنا</h1>
+        <p class="contact-subtitle">يسعدنا الرد على استفساراتك. املأ النموذج وسنعاود الاتصال بك.</p>
+    </div>
+</section>
+
+<div class="contact-container">
+    <div class="container">
+        {% if success %}
+            <div class="success-alert">
+                <i class="fas fa-check-circle"></i>
+                <div>
+                    شكراً لك {{ name }}، تم استلام رسالتك وسنتواصل معك قريباً.
+                </div>
+            </div>
+        {% endif %}
+        
+        <div class="contact-grid">
+            <!-- Contact Form Section -->
+            <div class="contact-form-section">
+                <h2 class="form-section-title">
+                    <i class="fas fa-envelope"></i> أرسل رسالة
+                </h2>
+                
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="name" class="form-label">
+                            <i class="fas fa-user"></i> الاسم
+                        </label>
+                        <input type="text" class="form-control" id="name" name="name" required placeholder="أدخل اسمك الكامل">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email" class="form-label">
+                            <i class="fas fa-envelope"></i> البريد الإلكتروني
+                        </label>
+                        <input type="email" class="form-control" id="email" name="email" required placeholder="أدخل بريدك الإلكتروني">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message" class="form-label">
+                            <i class="fas fa-comment"></i> الرسالة
+                        </label>
+                        <textarea class="form-control" id="message" name="message" rows="5" required placeholder="اكتب رسالتك هنا..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-paper-plane"></i> أرسل الرسالة
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Contact Information Section -->
+            <div class="contact-info-section">
+                <h2 class="info-section-title">
+                    <i class="fas fa-info-circle"></i> معلومات التواصل
+                </h2>
+                
+                <div class="contact-info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="info-content">
+                        <h5>العنوان</h5>
+                        <p>دبي، الإمارات العربية المتحدة</p>
+                    </div>
+                </div>
+                
+                <div class="contact-info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="info-content">
+                        <h5>الهاتف</h5>
+                        <p>+971 50 XXX XXXX</p>
+                    </div>
+                </div>
+                
+                <div class="contact-info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="info-content">
+                        <h5>البريد الإلكتروني</h5>
+                        <p>info@mjbwatches.com</p>
+                    </div>
+                </div>
+                
+                <div class="contact-info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="info-content">
+                        <h5>ساعات العمل</h5>
+                        <p>الأحد - الخميس: 9:00 ص - 9:00 م<br>الجمعة - السبت: 10:00 ص - 10:00 م</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

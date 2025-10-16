@@ -1,0 +1,366 @@
+{% extends 'base.html' %}
+
+{% block title %}من نحن - MJB Watches{% endblock %}
+
+{% block content %}
+<style>
+    .about-hero {
+        padding: 5rem 1rem;
+        text-align: center;
+        background: linear-gradient(135deg, rgba(15, 15, 15, 0.8) 0%, rgba(25, 25, 25, 0.9) 100%);
+        border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+        margin-bottom: 3.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .about-hero::before {
+        content: '';
+        position: absolute;
+        top: -100px;
+        right: -100px;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, transparent 70%);
+        border-radius: 50%;
+        z-index: 1;
+    }
+
+    .about-hero::after {
+        content: '';
+        position: absolute;
+        bottom: -150px;
+        left: -150px;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(212, 175, 55, 0.03) 0%, transparent 70%);
+        border-radius: 50%;
+        z-index: 1;
+    }
+
+    .about-title {
+        font-size: 3.8rem;
+        font-weight: 700;
+        color: var(--text-white);
+        font-family: 'Playfair Display', serif;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(to right, var(--text-white), var(--accent-gold));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        position: relative;
+        z-index: 2;
+    }
+
+    .about-subtitle {
+        font-size: 1.6rem;
+        color: var(--text-gray);
+        line-height: 1.7;
+        max-width: 700px;
+        margin: 0 auto;
+        font-weight: 400;
+        position: relative;
+        z-index: 2;
+    }
+
+    .company-values-section {
+        max-width: 1200px;
+        margin: 0 auto 4rem;
+        padding: 0 1rem;
+    }
+
+    .values-title {
+        font-size: 2.8rem;
+        margin-bottom: 3.5rem;
+        background: linear-gradient(to right, var(--text-white), var(--accent-gold));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-align: center;
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+    }
+
+    .values-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 2.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .value-card {
+        background: rgba(25, 25, 25, 0.9);
+        border: 1px solid rgba(212, 175, 55, 0.1);
+        border-radius: 20px;
+        padding: 2.5rem;
+        backdrop-filter: blur(10px);
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+    }
+
+    .value-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        border-color: rgba(212, 175, 55, 0.3);
+    }
+
+    .value-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(184, 115, 51, 0.1) 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.8rem;
+        font-size: 2rem;
+        color: var(--accent-gold);
+        border: 2px solid rgba(212, 175, 55, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .value-card:hover .value-icon {
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(184, 115, 51, 0.2) 100%);
+        transform: scale(1.1);
+        box-shadow: 0 10px 25px rgba(212, 175, 55, 0.2);
+    }
+
+    .value-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: var(--text-white);
+        margin-bottom: 1.2rem;
+        font-family: 'Playfair Display', serif;
+    }
+
+    .value-description {
+        color: var(--text-gray);
+        line-height: 1.7;
+        font-size: 1.05rem;
+        font-weight: 400;
+    }
+
+    .contact-cta {
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    .contact-btn {
+        background: linear-gradient(135deg, var(--accent-gold) 0%, #B87333 100%);
+        color: var(--primary-bg);
+        border: none;
+        padding: 1rem 2.8rem;
+        border-radius: 30px;
+        font-size: 1.3rem;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.8rem;
+        box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+        font-family: 'Playfair Display', serif;
+        text-decoration: none;
+    }
+
+    .contact-btn:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 15px 35px rgba(212, 175, 55, 0.6);
+        background: linear-gradient(135deg, var(--accent-gold-light) 0%, var(--accent-gold) 100%);
+    }
+
+    .mission-statement {
+        background: rgba(25, 25, 25, 0.9);
+        border: 1px solid rgba(212, 175, 55, 0.1);
+        border-radius: 20px;
+        padding: 3rem;
+        backdrop-filter: blur(10px);
+        margin: 3rem auto;
+        max-width: 900px;
+        text-align: center;
+    }
+
+    .mission-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--accent-gold);
+        margin-bottom: 1.5rem;
+        font-family: 'Playfair Display', serif;
+    }
+
+    .mission-text {
+        color: var(--text-gray);
+        line-height: 1.8;
+        font-size: 1.1rem;
+        font-weight: 400;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+        .about-title {
+            font-size: 3.2rem;
+        }
+        
+        .about-subtitle {
+            font-size: 1.4rem;
+        }
+        
+        .values-title {
+            font-size: 2.4rem;
+        }
+        
+        .value-icon {
+            width: 70px;
+            height: 70px;
+            font-size: 1.8rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .about-hero {
+            padding: 4rem 1rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        .about-title {
+            font-size: 2.8rem;
+        }
+        
+        .about-subtitle {
+            font-size: 1.3rem;
+        }
+        
+        .values-title {
+            font-size: 2.2rem;
+        }
+        
+        .value-card {
+            padding: 2rem;
+        }
+        
+        .value-icon {
+            width: 60px;
+            height: 60px;
+            font-size: 1.6rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .value-title {
+            font-size: 1.4rem;
+        }
+        
+        .mission-statement {
+            padding: 2rem;
+        }
+        
+        .mission-title {
+            font-size: 1.8rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .about-title {
+            font-size: 2.4rem;
+        }
+        
+        .about-subtitle {
+            font-size: 1.2rem;
+        }
+        
+        .values-title {
+            font-size: 2rem;
+        }
+        
+        .value-card {
+            padding: 1.8rem;
+            margin: 0 0.5rem;
+        }
+        
+        .value-icon {
+            width: 50px;
+            height: 50px;
+            font-size: 1.4rem;
+        }
+        
+        .value-title {
+            font-size: 1.3rem;
+        }
+        
+        .contact-btn {
+            font-size: 1.2rem;
+            padding: 0.9rem 2.2rem;
+        }
+        
+        .mission-statement {
+            padding: 1.8rem;
+        }
+        
+        .mission-title {
+            font-size: 1.6rem;
+        }
+    }
+</style>
+
+<section class="about-hero">
+    <div class="container">
+        <h1 class="about-title">من نحن</h1>
+    <p class="about-subtitle">MJB Watches - متجر متخصص في بيع الساعات الراقية من أشهر العلامات التجارية، نقدّم تشكيلة مُختارة بعناية ونوفر خدمات ما بعد البيع.</p>
+    </div>
+</section>
+
+<div class="company-values-section">
+    <div class="container">
+        <div class="mission-statement">
+                <h3 class="mission-title">مهمتنا</h3>
+                <p class="mission-text">
+                    في MJB Watches نهدف لتقديم أفضل تجربة شراء للساعات الفاخرة. نحن نعمل كموزع وبائع معتمد ونقوم باختيار موديلات مميزة بعناية من علامات تجارية موثوقة لتناسب أذواق عملائنا.
+                    نضمن أصالة الساعات، نوفر ضمانات وخدمات ما بعد البيع، ونسهّل عملية الشراء والشحن داخل وخارج الدولة.
+                </p>
+            </div>
+        
+        <h2 class="values-title">رؤيتنا وقيمنا</h2>
+        
+        <div class="values-grid">
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 class="value-title">اختيار مُختار</h3>
+                <p class="value-description">
+                    نعمل على انتقاء تشكيلة من الساعات من علامات تجارية موثوقة، ونوفر موديلات متنوعة تناسب الاحتياجات المختلفة — كلاسيكي، رياضي، فاخر أو ذكي.
+                </p>
+            </div>
+            
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-paint-brush"></i>
+                </div>
+                <h3 class="value-title">أصالة وضمان</h3>
+                <p class="value-description">
+                    كل ساعة مباعة عبر متجرنا مضمونة الأصالة، وتأتي مع معلومات الضمان وما يلزم من توثيق يصدر عن العلامة التجارية أو موزعها المعتمد.
+                </p>
+            </div>
+            
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <h3 class="value-title">خدمة ما بعد البيع</h3>
+                <p class="value-description">
+                    نوفر دعمًا لوجستيًا وخدمات صيانة وإرشاد فني داخل فترة الضمان وخارجها لضمان رضا العميل المستمر.
+                </p>
+            </div>
+        </div>
+        
+        <div class="contact-cta">
+            <a href="{% url 'contact' %}" class="contact-btn">
+                <i class="fas fa-comments"></i> تواصل معنا
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

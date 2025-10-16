@@ -1,0 +1,454 @@
+{% extends 'base.html' %}
+
+{% block title %}تفاصيل الطلب - #{{ order.id }}{% endblock %}
+
+{% block content %}
+<style>
+    .order-detail-container {
+        padding: 3rem 0;
+    }
+
+    .order-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    }
+
+    .order-title {
+        font-size: 2.8rem;
+        font-weight: 700;
+        color: var(--text-white);
+        font-family: 'Playfair Display', serif;
+        margin-bottom: 1rem;
+        background: linear-gradient(to right, var(--text-white), var(--accent-gold));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .order-status-section {
+        background: rgba(25, 25, 25, 0.9);
+        border: 1px solid rgba(212, 175, 55, 0.1);
+        border-radius: 20px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+        margin-bottom: 2.5rem;
+    }
+
+    .status-header {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--text-white);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .status-badge {
+        padding: 0.5rem 1.2rem;
+        border-radius: 25px;
+        font-size: 1rem;
+        font-weight: 700;
+        text-align: center;
+        display: inline-block;
+        text-transform: capitalize;
+        font-family: 'Playfair Display', serif;
+    }
+
+    .status-pending {
+        background: linear-gradient(135deg, rgba(255, 193, 7, 0.2) 0%, rgba(255, 193, 7, 0.1) 100%);
+        color: #FFC107;
+        border: 1px solid rgba(255, 193, 7, 0.3);
+    }
+
+    .status-processing {
+        background: linear-gradient(135deg, rgba(23, 162, 184, 0.2) 0%, rgba(23, 162, 184, 0.1) 100%);
+        color: #17A2B8;
+        border: 1px solid rgba(23, 162, 184, 0.3);
+    }
+
+    .status-shipped {
+        background: linear-gradient(135deg, rgba(40, 167, 69, 0.2) 0%, rgba(40, 167, 69, 0.1) 100%);
+        color: #28A745;
+        border: 1px solid rgba(40, 167, 69, 0.3);
+    }
+
+    .status-delivered {
+        background: linear-gradient(135deg, rgba(23, 162, 184, 0.2) 0%, rgba(23, 162, 184, 0.1) 100%);
+        color: #17A2B8;
+        border: 1px solid rgba(23, 162, 184, 0.3);
+    }
+
+    .status-cancelled {
+        background: linear-gradient(135deg, rgba(220, 53, 69, 0.2) 0%, rgba(220, 53, 69, 0.1) 100%);
+        color: #DC3545;
+        border: 1px solid rgba(220, 53, 69, 0.3);
+    }
+
+    .payment-paid {
+        background: linear-gradient(135deg, rgba(40, 167, 69, 0.2) 0%, rgba(40, 167, 69, 0.1) 100%);
+        color: #28A745;
+        border: 1px solid rgba(40, 167, 69, 0.3);
+    }
+
+    .payment-pending {
+        background: linear-gradient(135deg, rgba(255, 193, 7, 0.2) 0%, rgba(255, 193, 7, 0.1) 100%);
+        color: #FFC107;
+        border: 1px solid rgba(255, 193, 7, 0.3);
+    }
+
+    .order-info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .info-section {
+        background: rgba(25, 25, 25, 0.9);
+        border: 1px solid rgba(212, 175, 55, 0.1);
+        border-radius: 20px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .info-section h4 {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--accent-gold);
+        margin-bottom: 1.5rem;
+        font-family: 'Playfair Display', serif;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .info-item {
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .info-item:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+    }
+
+    .info-label {
+        font-size: 0.95rem;
+        color: var(--text-gray);
+        margin-bottom: 0.3rem;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .info-value {
+        font-size: 1.1rem;
+        color: var(--text-white);
+        font-weight: 600;
+        word-break: break-word;
+    }
+
+    .tracking-number {
+        font-family: 'monospace';
+        background: rgba(40, 40, 40, 0.6);
+        padding: 0.5rem;
+        border-radius: 8px;
+        display: inline-block;
+        margin-top: 0.3rem;
+    }
+
+    .order-items-section {
+        background: rgba(25, 25, 25, 0.9);
+        border: 1px solid rgba(212, 175, 55, 0.1);
+        border-radius: 20px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+        margin-bottom: 2.5rem;
+    }
+
+    .items-header {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--accent-gold);
+        margin-bottom: 1.5rem;
+        font-family: 'Playfair Display', serif;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .order-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .order-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .item-details {
+        flex: 1;
+    }
+
+    .item-name {
+        font-size: 1.1rem;
+        color: var(--text-white);
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+    }
+
+    .item-quantity {
+        font-size: 0.9rem;
+        color: var(--text-gray);
+    }
+
+    .item-price {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--accent-gold);
+        font-family: 'Playfair Display', serif;
+        min-width: 120px;
+        text-align: right;
+    }
+
+    .total-section {
+        background: rgba(25, 25, 25, 0.9);
+        border: 1px solid rgba(212, 175, 55, 0.1);
+        border-radius: 20px;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+        text-align: center;
+    }
+
+    .total-label {
+        font-size: 1.4rem;
+        color: var(--text-gray);
+        margin-bottom: 1rem;
+    }
+
+    .total-amount {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--accent-gold);
+        font-family: 'Playfair Display', serif;
+        margin-bottom: 0;
+    }
+
+    .back-to-orders {
+        color: var(--text-gray);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+        transition: color 0.3s ease;
+        font-weight: 500;
+    }
+
+    .back-to-orders:hover {
+        color: var(--accent-gold);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+        .order-title {
+            font-size: 2.4rem;
+        }
+        
+        .order-info-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .order-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+        }
+        
+        .order-title {
+            font-size: 2.2rem;
+        }
+        
+        .status-header, .info-section h4, .items-header {
+            font-size: 1.3rem;
+        }
+        
+        .total-amount {
+            font-size: 2rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .order-detail-container {
+            padding: 2rem 0;
+        }
+        
+        .order-title {
+            font-size: 2rem;
+        }
+        
+        .info-section, .order-items-section, .total-section {
+            padding: 1.5rem;
+        }
+        
+        .item-price {
+            font-size: 1.1rem;
+            min-width: 100px;
+        }
+        
+        .total-amount {
+            font-size: 1.8rem;
+        }
+        
+        .order-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.8rem;
+        }
+        
+        .item-price {
+            text-align: left;
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="container-fluid order-detail-container">
+    <div class="container">
+        <a href="{% url 'accounts:orders' %}" class="back-to-orders">
+            <i class="fas fa-arrow-right"></i> العودة إلى قائمة الطلبات
+        </a>
+        
+        <div class="order-header">
+            <h1 class="order-title">طلب #{{ order.id }}</h1>
+        </div>
+        
+        <!-- Order Status Section -->
+        <div class="order-status-section">
+            <h3 class="status-header">
+                <i class="fas fa-info-circle"></i> حالة الطلب
+            </h3>
+            <div class="status-badge status-{{ order.status|lower }}">
+                {{ order.get_status_display }}
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
+                <div>
+                    <div class="info-label">
+                        <i class="fas fa-credit-card"></i> طريقة الدفع
+                    </div>
+                    <div class="info-value">
+                        {{ order.get_payment_method_display|default:order.payment_method }}
+                    </div>
+                </div>
+                <div>
+                    <div class="info-label">
+                        <i class="fas fa-wallet"></i> حالة الدفع
+                    </div>
+                    <div class="info-value">
+                        {% if order.payment_status == 'paid' %}
+                            <span class="status-badge payment-paid">مدفوع</span>
+                        {% elif order.payment_status == 'pending' %}
+                            <span class="status-badge payment-pending">قيد الانتظار</span>
+                        {% else %}
+                            {{ order.get_payment_status_display|default:order.payment_status }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            {% if order.tracking_number %}
+            <div style="margin-top: 1.5rem;">
+                <div class="info-label">
+                    <i class="fas fa-truck"></i> رقم التتبع
+                </div>
+                <div class="info-value">
+                    <span class="tracking-number">{{ order.tracking_number }}</span>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Order Information Grid -->
+        <div class="order-info-grid">
+            <!-- Customer Information -->
+            <div class="info-section">
+                <h4>
+                    <i class="fas fa-user"></i> معلومات العميل
+                </h4>
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-user-tag"></i> الاسم الكامل
+                    </div>
+                    <div class="info-value">{{ order.first_name }} {{ order.last_name }}</div>
+                </div>
+                {% if order.mobile %}
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-mobile-alt"></i> رقم الموبايل
+                    </div>
+                    <div class="info-value">{{ order.mobile }}</div>
+                </div>
+                {% endif %}
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-envelope"></i> البريد الإلكتروني
+                    </div>
+                    <div class="info-value">{{ order.email }}</div>
+                </div>
+            </div>
+            
+            <!-- Shipping Information -->
+            <div class="info-section">
+                <h4>
+                    <i class="fas fa-map-marker-alt"></i> عنوان التسليم
+                </h4>
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-home"></i> العنوان الكامل
+                    </div>
+                    <div class="info-value">{{ order.address }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-calendar"></i> تاريخ الطلب
+                    </div>
+                    <div class="info-value">{{ order.created_at|date:"d M Y - H:i" }}</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Order Items -->
+        <div class="order-items-section">
+            <h4 class="items-header">
+                <i class="fas fa-list"></i> عناصر الطلب
+            </h4>
+            {% for it in order.items.all %}
+            <div class="order-item">
+                <div class="item-details">
+                    <div class="item-name">{{ it.product.name }}</div>
+                    <div class="item-quantity">الكمية: {{ it.quantity }}</div>
+                </div>
+                <div class="item-price">{{ it.price }} ج.م</div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Total Amount -->
+        <div class="total-section">
+            <div class="total-label">المبلغ الإجمالي</div>
+            <div class="total-amount">{{ order.total_amount }} ج.م</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
